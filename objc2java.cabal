@@ -1,0 +1,36 @@
+Name:                objc2java
+Version:             0.1
+
+-- A short (one-line) description of the package.
+Synopsis:            Translate pure ObjectiveC to pure Java, libraries be damned.
+
+-- A longer description of the package.
+-- Description:         
+
+Homepage:            https://github.com/gelisam/objc2java
+License:             PublicDomain
+License-file:        LICENSE
+Author:              Samuel Gélineau
+Maintainer:          gelisam@gmail.com
+
+Category:            Text
+
+Build-type:          Simple
+Cabal-version:       >=1.8
+
+Extra-source-files:  README.md,
+                     Makefile
+
+Library
+  hs-source-dirs: src
+  
+  Exposed-modules:     Math.Fib
+  -- Other-modules:       
+  
+  Build-depends:       base >= 4 && < 5
+
+executable objc2java-demo
+  build-depends:  base >= 4 && < 5,
+                  objc2java >= 0.1 && < 1
+  main-is:        Main.hs
+  hs-source-dirs: demo
