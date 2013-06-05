@@ -1,4 +1,4 @@
-import Math.Fib
+import Text.ObjC
 
 
 main = putStrLn "typechecks."
