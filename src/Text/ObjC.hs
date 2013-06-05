@@ -23,8 +23,8 @@ import Text.Syntax.Printer.Naive
 
 
 data Expr = Var String
-          | Call { method_name :: String
-                 , args :: [Expr]
+          | Call { target :: Expr
+                 , method_name :: String
                  }
      deriving (Show, Eq)
 
@@ -51,9 +51,10 @@ brackets = between (text "[") (text "]")
 -- >>> print expr (Var "Hello")
 -- Just "Hello"
 -- 
--- -- >>> parse expr "[[Hello alloc] init]"
--- -- [Call "init" [Call "alloc" [Var "Hello"]]]
+-- >>> parse expr "[[Hello alloc] init]"
+-- [Call {target = Call {target = Var "Hello", method_name = "alloc"}, method_name = "init"}]
 --
--- -- >>> print expr (Call "init" [Call "alloc" [Var "Hello"]])
--- -- Just "[[Hello alloc] init]"
+-- >>> print expr (Call (Call (Var "Hello") "alloc") "init")
+-- Just "[[Hello alloc] init]"
 expr = var <$> identifier
+   <|> brackets (call <$> (expr <*> optSpace *> identifier))
