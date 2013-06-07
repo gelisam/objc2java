@@ -24,7 +24,8 @@ Extra-source-files:  README.md,
 Library
   hs-source-dirs: src
   
-  Exposed-modules:     Text.ObjC
+  Exposed-modules:     Text.ObjC,
+                       Text.Java
   -- Other-modules:       
   
   Build-depends:       base >= 4 && < 5,
