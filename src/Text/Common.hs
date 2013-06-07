@@ -51,8 +51,8 @@ chainl1' :: Syntax s => s a -> s b -> s c -> Iso (a, (b, c)) a -> s a
 chainl1' arg0 op arg f 
   = foldl f <$> arg0 <*> many (op <*> arg)
 
-unit' :: Iso ((), a) a
-unit' = inverse (commute . unit)
+drop_left :: Iso ((), a) a
+drop_left = inverse (commute . unit)
 
 drop_op :: Iso (a, ((), b)) (a, b)
-drop_op = (id *** unit')
+drop_op = (id *** drop_left)
