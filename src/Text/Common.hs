@@ -30,6 +30,27 @@ digit   =  subset isDigit <$> token
 identifier :: Syntax s => s String
 identifier = cons <$> letter <*> many (letter <|> digit)
 
+-- | A string literal.
+-- 
+-- Examples:
+-- 
+-- >>> parse quoted_string "hello"
+-- []
+-- 
+-- >>> parse quoted_string "\"hello\""
+-- ["hello"]
+-- 
+-- >>> parse quoted_string "\"hello"
+-- []
+-- 
+-- >>> parse quoted_string "\"hello, \\\"world\\\"\""
+-- ["hello, \"world\""]
+quoted_string :: Syntax s => s String
+quoted_string = between (text "\"") (text "\"") (many char) where
+  char = non_quoted <|> quoted
+  non_quoted = subset (/= '\\') <$> token
+  quoted = text "\\" *> token
+
 parens, brackets :: Syntax s => s a -> s a
 parens = between (text "(") (text ")")
 brackets = between (text "[") (text "]")

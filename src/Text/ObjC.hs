@@ -25,6 +25,7 @@ import Text.Common
 
 
 data Expr = Var String
+          | StringLit String
           | MethodCall { target :: Expr
                        , method_name :: String
                        }
@@ -52,12 +53,13 @@ $(defineIsomorphisms ''Expr)
 -- >>> print expr (MethodCall (MethodCall (Var "Hello") "alloc") "init")
 -- Just "[[Hello alloc] init]"
 -- 
--- >>> parse expr "NSLog(msg)"
--- [FunctionCall {function_name = "NSLog", arg = Var "msg"}]
+-- >>> parse expr "NSLog(@\"Hello, World!\")"
+-- [FunctionCall {function_name = "NSLog", arg = StringLit "Hello, World!"}]
 -- 
 -- >>> print expr (FunctionCall "NSLog" (Var "msg"))
 -- Just "NSLog(msg)"
 expr :: Syntax s => s Expr
 expr = var <$> identifier
+   <|> stringLit <$> text "@" *> quoted_string
    <|> brackets (methodCall <$> expr <*> optSpace *> identifier)
    <|> functionCall <$> identifier <*> parens (expr)
