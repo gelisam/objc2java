@@ -25,9 +25,12 @@ import Text.Common
 
 
 data Expr = Var String
-          | Call { target :: Expr
-                 , method_name :: String
-                 }
+          | MethodCall { target :: Expr
+                       , method_name :: String
+                       }
+          | FunctionCall { function_name :: String
+                         , arg :: Expr
+                         }
      deriving (Show, Eq)
 
 $(defineIsomorphisms ''Expr)
@@ -44,10 +47,17 @@ $(defineIsomorphisms ''Expr)
 -- Just "Hello"
 -- 
 -- >>> parse expr "[[Hello alloc] init]"
--- [Call {target = Call {target = Var "Hello", method_name = "alloc"}, method_name = "init"}]
+-- [MethodCall {target = MethodCall {target = Var "Hello", method_name = "alloc"}, method_name = "init"}]
 -- 
--- >>> print expr (Call (Call (Var "Hello") "alloc") "init")
+-- >>> print expr (MethodCall (MethodCall (Var "Hello") "alloc") "init")
 -- Just "[[Hello alloc] init]"
+-- 
+-- >>> parse expr "NSLog(msg)"
+-- [FunctionCall {function_name = "NSLog", arg = Var "msg"}]
+-- 
+-- >>> print expr (FunctionCall "NSLog" (Var "msg"))
+-- Just "NSLog(msg)"
 expr :: Syntax s => s Expr
 expr = var <$> identifier
-   <|> brackets (call <$> (expr <*> optSpace *> identifier))
+   <|> brackets (methodCall <$> expr <*> optSpace *> identifier)
+   <|> functionCall <$> identifier <*> parens (expr)
