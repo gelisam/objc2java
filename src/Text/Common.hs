@@ -23,15 +23,18 @@ import Text.Syntax.Printer.Naive
 
 
 
-letter, digit :: Syntax delta => delta Char
+letter, digit :: Syntax s => s Char
 letter  =  subset isLetter <$> token
 digit   =  subset isDigit <$> token
 
+identifier :: Syntax s => s String
 identifier = cons <$> letter <*> many (letter <|> digit)
 
+parens, brackets :: Syntax s => s a -> s a
 parens = between (text "(") (text ")")
 brackets = between (text "[") (text "]")
 
+spacedDot :: Syntax s => s ()
 spacedDot = between skipSpace skipSpace (text ".")
 
 

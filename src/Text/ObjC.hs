@@ -48,5 +48,6 @@ $(defineIsomorphisms ''Expr)
 -- 
 -- >>> print expr (Call (Call (Var "Hello") "alloc") "init")
 -- Just "[[Hello alloc] init]"
+expr :: Syntax s => s Expr
 expr = var <$> identifier
    <|> brackets (call <$> (expr <*> optSpace *> identifier))
