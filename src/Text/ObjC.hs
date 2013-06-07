@@ -21,6 +21,8 @@ import Text.Syntax
 import Text.Syntax.Parser.Naive
 import Text.Syntax.Printer.Naive
 
+import Text.Common
+
 
 data Expr = Var String
           | Call { target :: Expr
@@ -31,18 +33,8 @@ data Expr = Var String
 $(defineIsomorphisms ''Expr)
 
 
-letter, digit :: Syntax delta => delta Char
-letter  =  subset isLetter <$> token
-digit   =  subset isDigit <$> token
-
-identifier = cons <$> letter <*> many (letter <|> digit)
-
-parens = between (text "(") (text ")")
-brackets = between (text "[") (text "]")
-
-
 -- | The syntax of ObjectiveC expressions.
---
+-- 
 -- Examples:
 -- 
 -- >>> parse expr "Hello"
@@ -53,7 +45,7 @@ brackets = between (text "[") (text "]")
 -- 
 -- >>> parse expr "[[Hello alloc] init]"
 -- [Call {target = Call {target = Var "Hello", method_name = "alloc"}, method_name = "init"}]
---
+-- 
 -- >>> print expr (Call (Call (Var "Hello") "alloc") "init")
 -- Just "[[Hello alloc] init]"
 expr = var <$> identifier
