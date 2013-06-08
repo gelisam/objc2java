@@ -29,6 +29,7 @@ Library
                        Text.Common,
                        Text.Syntax.Extra,
                        Control.Isomorphism.Partial.Extra
+                       Control.Isomorphism.Partial.Test
   -- Other-modules:       
   
   Build-depends:       base >= 4 && < 5,

@@ -1,17 +1,15 @@
 module Control.Isomorphism.Partial.Extra where
 
-import Prelude (Eq (..), (&&), Maybe (..), Bool)
+import Prelude ()
 
 import Control.Category (id, (.))
 import Control.Isomorphism.Partial (Iso, (***), (|||),
-                                    apply, unapply, inverse, commute, associate,
+                                    unapply, inverse, commute, associate,
                                     unit, nil, cons, listCases)
 import Data.Either (Either)
 
+import Control.Isomorphism.Partial.Test (testIso)
 
-testIso :: (Eq a, Eq b) => a -> Iso a b -> b -> Bool
-testIso x iso y =   apply iso x == Just y
-               && unapply iso y == Just x
 
 fst :: Iso a a' -> Iso (a, b) (a', b)
 fst = (*** id)
