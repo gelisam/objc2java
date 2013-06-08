@@ -66,6 +66,9 @@ $(defineIsomorphisms ''Expr)
 -- 
 -- >>> parse expr "println ( \"The current date and time is: %@\", DateTime.now() )"
 -- [FunctionCall {function_name = "println", args = [StringLit "The current date and time is: %@",MethodCall {target = Var "DateTime", method_name = "now", args = []}]}]
+-- 
+-- >>> print expr (FunctionCall "println" [StringLit "The current date and time is: %@", MethodCall (Var "DateTime") "now" []])
+-- Just "println(\"The current date and time is: %@\", DateTime.now())"
 expr :: Syntax s => s Expr
 expr = sepBy' (var <$> identifier) spacedDot member (member_iso . distribute)
    <|> functionCall <$> identifier <* skipSpace <*> args

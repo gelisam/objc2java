@@ -61,6 +61,9 @@ $(defineIsomorphisms ''Expr)
 -- 
 -- >>> parse expr "NSLog ( @\"The current date and time is: %@\", [NSDate date] )"
 -- [FunctionCall {function_name = "NSLog", args = [StringLit "The current date and time is: %@",MethodCall {target = Var "NSDate", method_name = "date"}]}]
+-- 
+-- >>> print expr (FunctionCall "NSLog" [StringLit "The current date and time is: %@", MethodCall (Var "NSDate") "date"])
+-- Just "NSLog(@\"The current date and time is: %@\", [NSDate date])"
 expr :: Syntax s => s Expr
 expr = var <$> identifier
    <|> stringLit <$> text "@" *> quoted_string
