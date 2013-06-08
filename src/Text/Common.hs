@@ -43,13 +43,22 @@ identifier = cons <$> letter <*> many (letter <|> digit)
 -- >>> parse quoted_string "\"hello"
 -- []
 -- 
--- >>> parse quoted_string "\"hello, \\\"world\\\"\""
--- ["hello, \"world\""]
+-- Escape sequences are preserved, but not interpreted.
+-- 
+-- >>> parse quoted_string "\"hello,\\n\n\\\"world\\\"\""
+-- ["hello,\\n\n\\\"world\\\""]
 quoted_string :: Syntax s => s String
-quoted_string = between (text "\"") (text "\"") (many char) where
-  char = non_quoted <|> quoted
-  non_quoted = subset (/= '\\') <$> token
-  quoted = text "\\" *> token
+quoted_string = text "\"" *> chars where
+  chars = nil <$> text "\""
+      <|> cons <$> non_escaped
+               <*> chars
+      <|> cons2 <$> escape
+                <*> token
+                <*> chars
+  non_escaped = subset (/= '\\') <$> token
+  escape = element '\\' <$> text "\\"
+  cons2 :: Iso (a, (a, [a])) [a]
+  cons2 = cons . (id *** cons)
 
 parens, brackets :: Syntax s => s a -> s a
 parens = between (text "(") (text ")")
