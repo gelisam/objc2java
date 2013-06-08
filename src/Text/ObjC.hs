@@ -33,17 +33,17 @@ $(defineIsomorphisms ''Expr)
 -- 
 -- Examples:
 -- 
--- >>> testSyntax expr "[[Hello alloc] init]"
+-- >>> testSyntax expr "[ [ Hello alloc ]init ]"
 -- Just "[[Hello alloc] init]"
 -- 
--- >>> testSyntax expr "NSLog(@\"Hello, World!\")"
+-- >>> testSyntax expr "NSLog ( @\"Hello, World!\" )"
 -- Just "NSLog(@\"Hello, World!\")"
 -- 
--- >>> testSyntax expr "NSLog ( @\"The current date and time is: %@\", [NSDate date] )"
+-- >>> testSyntax expr "NSLog ( @\"The current date and time is: %@\", [ NSDate  date ] )"
 -- Just "NSLog(@\"The current date and time is: %@\", [NSDate date])"
 -- 
--- >>> testSyntax expr "[myData writeToFile:@\"/tmp/log.txt\" atomically: NO]"
--- Just "[myData writeToFile:@\"/tmp/log.txt\"atomically:NO]"
+-- >>> testSyntax expr "[ myData  writeToFile:@\"/tmp/log.txt\" atomically:  NO ]"
+-- Just "[myData writeToFile: @\"/tmp/log.txt\" atomically: NO]"
 expr :: Syntax s => s Expr
 expr = var <$> identifier
    <|> stringLit <$> text "@" *> quoted_string
@@ -57,4 +57,4 @@ expr = var <$> identifier
   zeroary_methodCall = methodCall . snd append_nil . snd singleton
   
   named_args :: Syntax s => s [(String, Expr)]
-  named_args = flip sepBy1 skipSpace $ identifier <* text ":" <* skipSpace <*> expr
+  named_args = flip sepBy1 optSpace $ identifier <* text ":" <* optSpace <*> expr
