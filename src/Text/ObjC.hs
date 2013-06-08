@@ -66,5 +66,5 @@ expr = var <$> identifier
    <|> stringLit <$> text "@" *> quoted_string
    <|> brackets (methodCall <$> expr <*> optSpace *> identifier)
    <|> functionCall <$> identifier <* skipSpace <*> parens (
-         sepBy expr (skipSpace *> text "," <* optSpace)
+         sepBy expr (skipSpace *> comma <* optSpace)
        )
