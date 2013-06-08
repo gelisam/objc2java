@@ -1,7 +1,7 @@
 -- | Syntactic constructs shared by multiple languages.
 module Text.Common where
 
-import Prelude ((/=), String, Char)
+import Prelude ((/=), String, Char, ($))
 
 import Control.Category ((.))
 import Control.Isomorphism.Partial
@@ -10,6 +10,7 @@ import Text.Syntax
 import Text.Syntax.Parser.Naive (parse)
 
 import Control.Isomorphism.Partial.Extra
+import Text.Syntax.Test (testSyntax)
 
 
 letter, digit :: Syntax s => s Char
@@ -49,12 +50,21 @@ quoted_string = text "\"" *> chars where
   cons2 :: Iso (a, (a, [a])) [a]
   cons2 = cons . snd cons
 
+-- |
+-- >>> testSyntax (parens $ text "A") "( A )"
+-- Just "(A)"
 parens, brackets :: Syntax s => s a -> s a
 parens   = between (text "(" <* skipSpace) (skipSpace *> text ")")
 brackets = between (text "[" <* skipSpace) (skipSpace *> text "]")
 
+-- |
+-- >>> testSyntax spacedDot " . "
+-- Just "."
 spacedDot :: Syntax s => s ()
 spacedDot = between skipSpace skipSpace dot
 
+-- |
+-- >>> testSyntax spacedComma " , "
+-- Just ", "
 spacedComma :: Syntax s => s ()
 spacedComma = skipSpace *> comma <* optSpace

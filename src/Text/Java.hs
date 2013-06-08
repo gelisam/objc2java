@@ -8,11 +8,10 @@ import Control.Category ((.))
 import Control.Isomorphism.Partial
 import Control.Isomorphism.Partial.TH (defineIsomorphisms)
 import Text.Syntax
-import Text.Syntax.Parser.Naive (parse)
-import Text.Syntax.Printer.Naive (print)
 
 import Text.Common
 import Text.Syntax.Extra (sepBy')
+import Text.Syntax.Test (testSyntax)
 
 
 data Expr = Var String
@@ -36,28 +35,13 @@ $(defineIsomorphisms ''Expr)
 -- 
 -- Examples:
 -- 
--- >>> parse expr "hello"
--- [Var "hello"]
--- 
--- >>> print expr (Var "hello")
--- Just "hello"
--- 
--- >>> parse expr "Hello.alloc.init"
--- [Field {target = Field {target = Var "Hello", field_name = "alloc"}, field_name = "init"}]
--- 
--- >>> print expr (Field (Field (Var "Hello") "alloc") "init")
+-- >>> testSyntax expr "Hello . alloc . init"
 -- Just "Hello.alloc.init"
 -- 
--- >>> parse expr "Hello.alloc().init(world)"
--- [MethodCall {target = MethodCall {target = Var "Hello", method_name = "alloc", args = []}, method_name = "init", args = [Var "world"]}]
--- 
--- >>> print expr (MethodCall (MethodCall (Var "Hello") "alloc" []) "init" [Var "world"])
+-- >>> testSyntax expr "Hello . alloc () . init( world )"
 -- Just "Hello.alloc().init(world)"
 -- 
--- >>> parse expr "println ( \"The current date and time is: %@\", DateTime.now() )"
--- [FunctionCall {function_name = "println", args = [StringLit "The current date and time is: %@",MethodCall {target = Var "DateTime", method_name = "now", args = []}]}]
--- 
--- >>> print expr (FunctionCall "println" [StringLit "The current date and time is: %@", MethodCall (Var "DateTime") "now" []])
+-- >>> testSyntax expr "println ( \"The current date and time is: %@\" , DateTime.now() )"
 -- Just "println(\"The current date and time is: %@\", DateTime.now())"
 expr :: Syntax s => s Expr
 expr = sepBy' (var <$> identifier) spacedDot member (member_iso . distribute)

@@ -28,6 +28,7 @@ Library
                        Text.Java,
                        Text.Common,
                        Text.Syntax.Extra,
+                       Text.Syntax.Test,
                        Control.Isomorphism.Partial.Extra
                        Control.Isomorphism.Partial.Test
   -- Other-modules:       

@@ -8,12 +8,11 @@ import Control.Category ((.))
 import Control.Isomorphism.Partial (Iso, (<$>))
 import Control.Isomorphism.Partial.TH (defineIsomorphisms)
 import Text.Syntax
-import Text.Syntax.Parser.Naive (parse)
-import Text.Syntax.Printer.Naive (print)
 
 import Control.Isomorphism.Partial.Extra
 import Text.Common
 import Text.Syntax.Extra (sepBy1)
+import Text.Syntax.Test (testSyntax)
 
 
 data Expr = Var String
@@ -34,32 +33,17 @@ $(defineIsomorphisms ''Expr)
 -- 
 -- Examples:
 -- 
--- >>> parse expr "Hello"
--- [Var "Hello"]
--- 
--- >>> print expr (Var "Hello")
--- Just "Hello"
--- 
--- >>> parse expr "[[Hello alloc] init]"
--- [MethodCall {target = MethodCall {target = Var "Hello", method_name = ["alloc"], args = []}, method_name = ["init"], args = []}]
--- 
--- >>> print expr (MethodCall (MethodCall (Var "Hello") ["alloc"] []) ["init"] [])
+-- >>> testSyntax expr "[[Hello alloc] init]"
 -- Just "[[Hello alloc] init]"
 -- 
--- >>> parse expr "NSLog(@\"Hello, World!\")"
--- [FunctionCall {function_name = "NSLog", args = [StringLit "Hello, World!"]}]
+-- >>> testSyntax expr "NSLog(@\"Hello, World!\")"
+-- Just "NSLog(@\"Hello, World!\")"
 -- 
--- >>> print expr (FunctionCall "NSLog" [Var "msg"])
--- Just "NSLog(msg)"
--- 
--- >>> parse expr "NSLog ( @\"The current date and time is: %@\", [NSDate date] )"
--- [FunctionCall {function_name = "NSLog", args = [StringLit "The current date and time is: %@",MethodCall {target = Var "NSDate", method_name = ["date"], args = []}]}]
--- 
--- >>> print expr (FunctionCall "NSLog" [StringLit "The current date and time is: %@", MethodCall (Var "NSDate") ["date"] []])
+-- >>> testSyntax expr "NSLog ( @\"The current date and time is: %@\", [NSDate date] )"
 -- Just "NSLog(@\"The current date and time is: %@\", [NSDate date])"
 -- 
--- >>> parse expr "[myData writeToFile:@\"/tmp/log.txt\" atomically: NO]"
--- [MethodCall {target = Var "myData", method_name = ["writeToFile","atomically"], args = [StringLit "/tmp/log.txt",Var "NO"]}]
+-- >>> testSyntax expr "[myData writeToFile:@\"/tmp/log.txt\" atomically: NO]"
+-- Just "[myData writeToFile:@\"/tmp/log.txt\"atomically:NO]"
 expr :: Syntax s => s Expr
 expr = var <$> identifier
    <|> stringLit <$> text "@" *> quoted_string
