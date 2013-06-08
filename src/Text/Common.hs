@@ -81,11 +81,25 @@ spacedDot = between skipSpace skipSpace dot
 -- >>> parse (chainl1' (text "A") (text ",") (text "B") (ignore ((), ((), ())))) "A,B,B"
 -- [()]
 chainl1' :: Syntax s => s a -> s b -> s c -> Iso (a, (b, c)) a -> s a
-chainl1' arg0 op arg f 
-  = foldl f <$> arg0 <*> many (op <*> arg)
+chainl1' arg0 op arg f = foldl f <$> arg0 <*> many (op <*> arg)
 
-drop_left :: Iso ((), a) a
-drop_left = inverse (commute . unit)
-
-drop_op :: Iso (a, ((), b)) (a, b)
-drop_op = (id *** drop_left)
+-- | A heterogeneous version of sepBy.
+-- 
+-- Examples:
+-- 
+-- >>> parse (sepBy (text "A") (text ",")) "A,A,A"
+-- [[(),(),()]]
+-- >>> parse (sepBy (text "A") (text ",")) "A,B,B"
+-- []
+-- >>> parse (sepBy' (text "A") (text ",") (text "B") (ignore ((), ()))) "A,A,A"
+-- []
+-- >>> parse (sepBy' (text "A") (text ",") (text "B") (ignore ((), ()))) "A,B,B"
+-- [()]
+sepBy' :: Syntax s => s a -> s () -> s b -> Iso (a, b) a -> s a
+sepBy' arg0 op arg f = chainl1' arg0 op arg (f . drop_op)
+                       where
+  drop_left :: Iso ((), a) a
+  drop_left = inverse (commute . unit)
+  
+  drop_op :: Iso (a, ((), b)) (a, b)
+  drop_op = (id *** drop_left)

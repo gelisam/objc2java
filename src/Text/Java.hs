@@ -49,4 +49,4 @@ $(defineIsomorphisms ''Expr)
 -- >>> print expr (Field (Field (Var "Hello") "alloc") "init")
 -- Just "Hello.alloc.init"
 expr :: Syntax s => s Expr
-expr = chainl1' (var <$> identifier) spacedDot identifier (field . drop_op)
+expr = sepBy' (var <$> identifier) spacedDot identifier field
