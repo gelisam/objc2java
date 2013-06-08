@@ -108,6 +108,24 @@ sepBy' arg0 op arg f = chainl1' arg0 op arg (f . drop_op)
   drop_op :: Iso (a, ((), b)) (a, b)
   drop_op = snd drop_left
 
+-- | A non-empty version of sepBy.
+-- 
+-- Examples:
+-- 
+-- >>> parse (sepBy (text "A") (text ",")) "A"
+-- [[()]]
+-- 
+-- >>> parse (sepBy (text "A") (text ",")) ""
+-- [[]]
+-- 
+-- >>> parse (sepBy1 (text "A") (text ",")) "A"
+-- [[()]]
+-- 
+-- >>> parse (sepBy1 (text "A") (text ",")) ""
+-- []
+sepBy1 :: Syntax delta => delta alpha -> delta () -> delta [alpha]
+sepBy1 arg op = cons <$> arg <*> many (op *> arg) 
+
 
 testIso :: (Eq a, Eq b) => a -> Iso a b -> b -> Bool
 testIso x iso y =   apply iso x == Just y
@@ -118,6 +136,12 @@ fst = (*** id)
 
 snd :: Iso b b' -> Iso (a, b) (a, b')
 snd = (id ***)
+
+append_nil :: Iso a (a, [b])
+append_nil = snd nil . unit
+  
+singleton :: Iso a [a]
+singleton = cons . append_nil
 
 -- | Invertible zip, fails if the lists have different lengths.
 -- 
