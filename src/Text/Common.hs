@@ -59,7 +59,7 @@ quoted_string = text "\"" *> chars where
   non_escaped = subset (/= '\\') <$> token
   escape = element '\\' <$> text "\\"
   cons2 :: Iso (a, (a, [a])) [a]
-  cons2 = cons . (id *** cons)
+  cons2 = cons . snd cons
 
 parens, brackets :: Syntax s => s a -> s a
 parens   = between (text "(" <* skipSpace) (skipSpace *> text ")")
@@ -106,7 +106,7 @@ sepBy' arg0 op arg f = chainl1' arg0 op arg (f . drop_op)
   drop_left = inverse (commute . unit)
   
   drop_op :: Iso (a, ((), b)) (a, b)
-  drop_op = (id *** drop_left)
+  drop_op = snd drop_left
 
 
 testIso :: (Eq a, Eq b) => a -> Iso a b -> b -> Bool
