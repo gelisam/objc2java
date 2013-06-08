@@ -23,6 +23,9 @@ import Text.Syntax.Printer.Naive
 
 import Text.Common
 
+import Control.Isomorphism.Partial.Extra
+import Text.Syntax.Extra
+
 
 data Expr = Var String
           | StringLit String

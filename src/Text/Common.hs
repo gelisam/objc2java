@@ -22,6 +22,8 @@ import Text.Syntax
 import Text.Syntax.Parser.Naive
 import Text.Syntax.Printer.Naive
 
+import Control.Isomorphism.Partial.Extra
+import Text.Syntax.Extra
 
 
 letter, digit :: Syntax s => s Char
@@ -70,107 +72,3 @@ spacedDot = between skipSpace skipSpace dot
 
 spacedComma :: Syntax s => s ()
 spacedComma = skipSpace *> comma <* optSpace
-
-
--- | A heterogeneous version of chainl1.
--- 
--- Examples:
--- 
--- >>> parse (chainl1 (text "A") (text ",") (ignore ((), ((), ())))) "A,A,A"
--- [()]
--- >>> parse (chainl1 (text "A") (text ",") (ignore ((), ((), ())))) "A,B,B"
--- []
--- >>> parse (chainl1' (text "A") (text ",") (text "B") (ignore ((), ((), ())))) "A,A,A"
--- []
--- >>> parse (chainl1' (text "A") (text ",") (text "B") (ignore ((), ((), ())))) "A,B,B"
--- [()]
-chainl1' :: Syntax s => s a -> s b -> s c -> Iso (a, (b, c)) a -> s a
-chainl1' arg0 op arg f = foldl f <$> arg0 <*> many (op <*> arg)
-
--- | A heterogeneous version of sepBy.
--- 
--- Examples:
--- 
--- >>> parse (sepBy (text "A") (text ",")) "A,A,A"
--- [[(),(),()]]
--- >>> parse (sepBy (text "A") (text ",")) "A,B,B"
--- []
--- >>> parse (sepBy' (text "A") (text ",") (text "B") (ignore ((), ()))) "A,A,A"
--- []
--- >>> parse (sepBy' (text "A") (text ",") (text "B") (ignore ((), ()))) "A,B,B"
--- [()]
-sepBy' :: Syntax s => s a -> s () -> s b -> Iso (a, b) a -> s a
-sepBy' arg0 op arg f = chainl1' arg0 op arg (f . drop_op)
-                       where
-  drop_left :: Iso ((), a) a
-  drop_left = inverse (commute . unit)
-  
-  drop_op :: Iso (a, ((), b)) (a, b)
-  drop_op = snd drop_left
-
--- | A non-empty version of sepBy.
--- 
--- Examples:
--- 
--- >>> parse (sepBy (text "A") (text ",")) "A"
--- [[()]]
--- 
--- >>> parse (sepBy (text "A") (text ",")) ""
--- [[]]
--- 
--- >>> parse (sepBy1 (text "A") (text ",")) "A"
--- [[()]]
--- 
--- >>> parse (sepBy1 (text "A") (text ",")) ""
--- []
-sepBy1 :: Syntax delta => delta alpha -> delta () -> delta [alpha]
-sepBy1 arg op = cons <$> arg <*> many (op *> arg) 
-
-
-testIso :: (Eq a, Eq b) => a -> Iso a b -> b -> Bool
-testIso x iso y =   apply iso x == Just y
-               && unapply iso y == Just x
-
-fst :: Iso a a' -> Iso (a, b) (a', b)
-fst = (*** id)
-
-snd :: Iso b b' -> Iso (a, b) (a, b')
-snd = (id ***)
-
-append_nil :: Iso a (a, [b])
-append_nil = snd nil . unit
-  
-singleton :: Iso a [a]
-singleton = cons . append_nil
-
--- | Invertible zip, fails if the lists have different lengths.
--- 
--- Examples:
--- 
--- >>> testIso [(1, '1'), (2, '2'), (3, '3')] unzip ([1,2,3], "123")
--- True
--- 
--- >>> unapply unzip ([1,2,3], "123")
--- Just [(1,'1'),(2,'2'),(3,'3')]
--- 
--- >>> unapply unzip ([1,2], "123")
--- Nothing
-unzip :: Iso [(a, b)] ([a], [b])
-unzip = split . inverse listCases where
-  split :: Iso (Either () ((a, b), [(a, b)])) ([a], [b])
-  split = nils
-      ||| (conses . snd unzip)
-  
-  nils :: Iso () ([a], [b])
-  nils = (nil *** nil) . unit
-  
-  conses :: Iso ((a, b), ([a], [b])) ([a], [b])
-  conses = (cons *** cons) . redistribute
-  
-  redistribute :: Iso ((a, b), (a', b'))
-                      ((a, a'), (b, b'))
-  redistribute = associate
-               . snd ( inverse associate
-                     . fst commute
-                     . associate)
-               . inverse associate
