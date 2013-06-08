@@ -56,7 +56,7 @@ parens = between (text "(") (text ")")
 brackets = between (text "[") (text "]")
 
 spacedDot :: Syntax s => s ()
-spacedDot = between skipSpace skipSpace (text ".")
+spacedDot = between skipSpace skipSpace dot
 
 
 -- | A heterogeneous version of chainl1.
