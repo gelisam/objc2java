@@ -11,6 +11,7 @@ import Control.Category (id, (.))
 import Control.Monad (mplus)
 
 import Data.Char (isLetter, isDigit)
+import Data.Either
 
 import qualified Text.ParserCombinators.Parsec as Parsec
 
@@ -28,6 +29,10 @@ data Expr = Var String
           | Field { target :: Expr
                  , field_name :: String
                  }
+          | MethodCall { target :: Expr
+                       , method_name :: String
+                       , args :: [Expr]
+                       }
      deriving (Show, Eq)
 
 $(defineIsomorphisms ''Expr)
@@ -48,5 +53,16 @@ $(defineIsomorphisms ''Expr)
 -- 
 -- >>> print expr (Field (Field (Var "Hello") "alloc") "init")
 -- Just "Hello.alloc.init"
+-- 
+-- >>> parse expr "Hello.alloc().init(world)"
+-- [MethodCall {target = MethodCall {target = Var "Hello", method_name = "alloc", args = []}, method_name = "init", args = [Var "world"]}]
+-- 
+-- >>> print expr (MethodCall (MethodCall (Var "Hello") "alloc" []) "init" [Var "world"])
+-- Just "Hello.alloc().init(world)"
 expr :: Syntax s => s Expr
-expr = sepBy' (var <$> identifier) spacedDot identifier field
+expr = sepBy' (var <$> identifier) spacedDot member (member_iso . distribute)
+       where
+  member = left <$> identifier
+       <|> right <$> identifier <* skipSpace <*> parens (sepBy expr spacedComma)
+  member_iso = field
+           ||| methodCall
