@@ -1,24 +1,12 @@
 module Control.Isomorphism.Partial.Extra where
 
-import Prelude (Show (..), Read (..), Eq (..), String, Integer,
-                map, (++), (&&), Maybe (..), Bool (..), ($), not, elem, 
-                notElem, reads, Char, undefined)
+import Prelude (Eq (..), (&&), Maybe (..), Bool)
 
 import Control.Category (id, (.))
-
-import Control.Monad (mplus)
-
-import Data.Char (isLetter, isDigit)
-import Data.Either
-
-import qualified Text.ParserCombinators.Parsec as Parsec
-
-import Control.Isomorphism.Partial
-import Control.Isomorphism.Partial.TH
-import Control.Isomorphism.Partial.Unsafe (Iso (Iso))
-import Text.Syntax
-import Text.Syntax.Parser.Naive
-import Text.Syntax.Printer.Naive
+import Control.Isomorphism.Partial (Iso, (***), (|||),
+                                    apply, unapply, inverse, commute, associate,
+                                    unit, nil, cons, listCases)
+import Data.Either (Either)
 
 
 testIso :: (Eq a, Eq b) => a -> Iso a b -> b -> Bool

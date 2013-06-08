@@ -1,26 +1,13 @@
 module Text.Syntax.Extra where
 
-import Prelude (Show (..), Read (..), Eq (..), String, Integer,
-                map, (++), (&&), Maybe (..), Bool (..), ($), not, elem, 
-                notElem, reads, Char, undefined)
+import Prelude ()
 
-import Control.Category (id, (.))
-
-import Control.Monad (mplus)
-
-import Data.Char (isLetter, isDigit)
-import Data.Either
-
-import qualified Text.ParserCombinators.Parsec as Parsec
-
+import Control.Category ((.))
 import Control.Isomorphism.Partial
-import Control.Isomorphism.Partial.TH
-import Control.Isomorphism.Partial.Unsafe (Iso (Iso))
 import Text.Syntax
-import Text.Syntax.Parser.Naive
-import Text.Syntax.Printer.Naive
+import Text.Syntax.Parser.Naive (parse)
 
-import Control.Isomorphism.Partial.Extra
+import Control.Isomorphism.Partial.Extra (snd)
 
 
 -- | A heterogeneous version of chainl1.

@@ -1,31 +1,18 @@
-{-# LANGUAGE TemplateHaskell, NoMonomorphismRestriction, RelaxedPolyRec #-}
+{-# LANGUAGE TemplateHaskell #-}
 -- | An incomplete description of the Java syntax.
 module Text.Java where
 
-import Prelude (Show (..), Read (..), Eq (..), String, Integer,
-                map, (++), Maybe (..), ($), fst, not, elem, 
-                notElem, reads, Char)
+import Prelude (Show, Eq, String)
 
-import Control.Category (id, (.))
-
-import Control.Monad (mplus)
-
-import Data.Char (isLetter, isDigit)
-import Data.Either
-
-import qualified Text.ParserCombinators.Parsec as Parsec
-
+import Control.Category ((.))
 import Control.Isomorphism.Partial
-import Control.Isomorphism.Partial.TH
-import Control.Isomorphism.Partial.Unsafe (Iso (Iso))
+import Control.Isomorphism.Partial.TH (defineIsomorphisms)
 import Text.Syntax
-import Text.Syntax.Parser.Naive
-import Text.Syntax.Printer.Naive
+import Text.Syntax.Parser.Naive (parse)
+import Text.Syntax.Printer.Naive (print)
 
 import Text.Common
-
-import Control.Isomorphism.Partial.Extra
-import Text.Syntax.Extra
+import Text.Syntax.Extra (sepBy')
 
 
 data Expr = Var String

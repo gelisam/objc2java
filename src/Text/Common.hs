@@ -1,29 +1,15 @@
-{-# LANGUAGE TemplateHaskell, NoMonomorphismRestriction, RelaxedPolyRec #-}
 -- | Syntactic constructs shared by multiple languages.
 module Text.Common where
 
-import Prelude (Show (..), Read (..), Eq (..), String, Integer,
-                map, (++), (&&), Maybe (..), Bool (..), ($), not, elem, 
-                notElem, reads, Char, undefined)
+import Prelude ((/=), String, Char)
 
-import Control.Category (id, (.))
-
-import Control.Monad (mplus)
-
-import Data.Char (isLetter, isDigit)
-import Data.Either
-
-import qualified Text.ParserCombinators.Parsec as Parsec
-
+import Control.Category ((.))
 import Control.Isomorphism.Partial
-import Control.Isomorphism.Partial.TH
-import Control.Isomorphism.Partial.Unsafe (Iso (Iso))
+import Data.Char (isLetter, isDigit)
 import Text.Syntax
-import Text.Syntax.Parser.Naive
-import Text.Syntax.Printer.Naive
+import Text.Syntax.Parser.Naive (parse)
 
 import Control.Isomorphism.Partial.Extra
-import Text.Syntax.Extra
 
 
 letter, digit :: Syntax s => s Char

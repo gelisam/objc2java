@@ -1,30 +1,19 @@
-{-# LANGUAGE TemplateHaskell, NoMonomorphismRestriction, RelaxedPolyRec #-}
+{-# LANGUAGE TemplateHaskell #-}
 -- | An incomplete description of the ObjectiveC syntax.
 module Text.ObjC where
 
-import Prelude (Show (..), Read (..), Eq (..), String, Integer,
-                map, (++), Maybe (..), ($), fst, not, elem, 
-                notElem, flip, reads, Char)
+import Prelude (Show, Eq, String, ($), flip)
 
-import Control.Category (id, (.))
-
-import Control.Monad (mplus)
-
-import Data.Char (isLetter, isDigit)
-
-import qualified Text.ParserCombinators.Parsec as Parsec
-
-import Control.Isomorphism.Partial
-import Control.Isomorphism.Partial.TH
-import Control.Isomorphism.Partial.Unsafe (Iso (Iso))
+import Control.Category ((.))
+import Control.Isomorphism.Partial (Iso, (<$>))
+import Control.Isomorphism.Partial.TH (defineIsomorphisms)
 import Text.Syntax
-import Text.Syntax.Parser.Naive
-import Text.Syntax.Printer.Naive
-
-import Text.Common
+import Text.Syntax.Parser.Naive (parse)
+import Text.Syntax.Printer.Naive (print)
 
 import Control.Isomorphism.Partial.Extra
-import Text.Syntax.Extra
+import Text.Common
+import Text.Syntax.Extra (sepBy1)
 
 
 data Expr = Var String
