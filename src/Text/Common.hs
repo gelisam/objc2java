@@ -67,6 +67,9 @@ brackets = between (text "[" <* skipSpace) (skipSpace *> text "]")
 spacedDot :: Syntax s => s ()
 spacedDot = between skipSpace skipSpace dot
 
+spacedComma :: Syntax s => s ()
+spacedComma = skipSpace *> comma <* optSpace
+
 
 -- | A heterogeneous version of chainl1.
 -- 
