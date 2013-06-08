@@ -61,8 +61,8 @@ quoted_string = text "\"" *> chars where
   cons2 = cons . (id *** cons)
 
 parens, brackets :: Syntax s => s a -> s a
-parens = between (text "(") (text ")")
-brackets = between (text "[") (text "]")
+parens   = between (text "(" <* skipSpace) (skipSpace *> text ")")
+brackets = between (text "[" <* skipSpace) (skipSpace *> text "]")
 
 spacedDot :: Syntax s => s ()
 spacedDot = between skipSpace skipSpace dot
