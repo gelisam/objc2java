@@ -26,6 +26,7 @@ import Text.Common
 
 
 data Expr = Var String
+          | StringLit String
           | Field { target :: Expr
                  , field_name :: String
                  }
@@ -33,6 +34,9 @@ data Expr = Var String
                        , method_name :: String
                        , args :: [Expr]
                        }
+          | FunctionCall { function_name :: String
+                         , args :: [Expr]
+                         }
      deriving (Show, Eq)
 
 $(defineIsomorphisms ''Expr)
@@ -59,10 +63,16 @@ $(defineIsomorphisms ''Expr)
 -- 
 -- >>> print expr (MethodCall (MethodCall (Var "Hello") "alloc" []) "init" [Var "world"])
 -- Just "Hello.alloc().init(world)"
+-- 
+-- >>> parse expr "println ( \"The current date and time is: %@\", DateTime.now() )"
+-- [FunctionCall {function_name = "println", args = [StringLit "The current date and time is: %@",MethodCall {target = Var "DateTime", method_name = "now", args = []}]}]
 expr :: Syntax s => s Expr
 expr = sepBy' (var <$> identifier) spacedDot member (member_iso . distribute)
+   <|> functionCall <$> identifier <* skipSpace <*> args
+   <|> stringLit <$> quoted_string
        where
+  args = parens (sepBy expr spacedComma)
   member = left <$> identifier
-       <|> right <$> identifier <* skipSpace <*> parens (sepBy expr spacedComma)
+       <|> right <$> identifier <* skipSpace <*> args
   member_iso = field
            ||| methodCall
