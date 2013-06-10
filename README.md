@@ -11,8 +11,27 @@ My goals are similar to that of [java2objc](https://code.google.com/p/java2objc/
 (in development)
 
 
-intended usage
---------------
+usage
+-----
 
     > echo "[[Hello alloc] init];" | objc2java
     new Hello();
+
+
+status
+------
+
+Currently, the objc2java-demo executable can filter an ObjectiveC source file and substitue Java-style calls where appropriate. Example output:
+
+    > make demo
+    // First program example
+    
+    #import <Foundation/Foundation.h>
+    
+    int main (int argc, const char * argv[])
+    {
+      NSAutoreleasePool *pool = new(NSAutoreleasePool());
+      NSLog("Hello, World!");
+      pool.drain();
+      return 0;
+    }
