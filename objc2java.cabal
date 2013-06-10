@@ -27,6 +27,7 @@ Library
   Exposed-modules:     Text.ObjC,
                        Text.Java,
                        Text.Common,
+                       Text.Fragment,
                        Text.Syntax.Extra,
                        Text.Syntax.Test,
                        Control.Isomorphism.Partial.Extra
