@@ -41,6 +41,7 @@ Library
 
 executable objc2java-demo
   build-depends:  base >= 4 && < 5,
-                  objc2java >= 0.1 && < 1
+                  objc2java >= 0.1 && < 1,
+                  invertible-syntax >= 0.2 && < 1
   main-is:        Main.hs
   hs-source-dirs: demo
