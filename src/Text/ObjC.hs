@@ -45,11 +45,11 @@ $(defineIsomorphisms ''Expr)
 -- >>> testSyntax expr "[ myData  writeToFile:@\"/tmp/log.txt\" atomically:  NO ]"
 -- Just "[myData writeToFile: @\"/tmp/log.txt\" atomically: NO]"
 expr :: Syntax s => s Expr
-expr = var <$> identifier
-   <|> stringLit <$> text "@" *> quoted_string
+expr = stringLit <$> text "@" *> quoted_string
    <|> brackets (zeroary_methodCall <$> expr <*> optSpace *> identifier)
    <|> brackets (methodCall . snd unzip <$> expr <*> optSpace *> named_args)
    <|> functionCall <$> identifier <* skipSpace <*> positional_args
+   <|> var <$> identifier
        where
   positional_args = parens (sepBy expr spacedComma)
   
