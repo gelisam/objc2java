@@ -1,8 +1,12 @@
+import Data.Functor ((<$>))
 import Data.List (intercalate)
-import qualified Text.ObjC as ObjC
+import Data.Maybe (fromJust)
 import qualified Text.Java as Java
+import qualified Text.ObjC as ObjC
 import qualified Text.Syntax.Parser.Naive as Parser (parse)
 import qualified Text.Syntax.Printer.Naive as Printer (print)
+
+import Text.Fragment
 
 
 testConvert :: String -> Maybe String
@@ -47,5 +51,13 @@ convert (ObjC.MethodCall target
   java_method_name = intercalate "_" method_name_parts
 
 
+objc2java :: String -> String
+objc2java = fromJust
+          . Printer.print (fragments Java.expr)
+          . (fmap . fmap) convert
+          . head
+          . Parser.parse (fragments ObjC.expr)
+
 main :: IO ()
-main = putStrLn "typechecks."
+main = do output <- objc2java <$> getContents
+          putStr output

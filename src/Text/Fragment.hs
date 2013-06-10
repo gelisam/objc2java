@@ -1,8 +1,8 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE DeriveFunctor, TemplateHaskell #-}
 -- | Incomplete grammar? Leave the unrecognized parts alone.
 module Text.Fragment where
 
-import Prelude (Show, Eq, Char, ($), head)
+import Prelude (Show, Eq, Functor, Char, ($), head)
 
 import Control.Isomorphism.Partial ((<$>))
 import Control.Isomorphism.Partial.TH (defineIsomorphisms)
@@ -12,7 +12,7 @@ import Text.Syntax.Parser.Naive (parse)
 
 data Fragment a = Recognized a
                 | Unrecognized Char
-     deriving (Show, Eq)
+     deriving (Show, Eq, Functor)
 
 $(defineIsomorphisms ''Fragment)
 
