@@ -33,11 +33,11 @@ proofs/%.proof: proofs/%.java tests/%.expected
 
 proofs/%.java: tests/%.m build
 	mkdir -p $(dir $@)
-	./dist/build/$(NAME)-demo/$(NAME)-demo < $< > $@
+	./dist/build/$(NAME)/$(NAME) < $< > $@
 
 
 demo: build
-	./dist/build/$(NAME)-demo/$(NAME)-demo < tests/hello.m
+	./dist/build/$(NAME)/$(NAME) < tests/hello.m
 
 
 clean:
