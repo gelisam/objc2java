@@ -52,6 +52,8 @@ So far, only the method call syntax is converted.
 future work
 -----------
 
-Coming up next: method signatures.
+Coming up next: customizable idiom translation (i.e. `[[AAA alloc] init]` becomes `new AAA()`).
+
+After that: method signatures.
 
 By the way, since the parser is based on [invertible-syntax](http://hackage.haskell.org/package/invertible-syntax), it would not be a lot of work to do the translation in the opposite direction, i.e., converting the syntax from Java to ObjectiveC. But there is already a tool for that, called [java2objc](https://code.google.com/p/java2objc/).
