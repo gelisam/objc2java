@@ -1,7 +1,7 @@
 -- | Syntactic constructs shared by multiple languages.
 module Text.Common where
 
-import Prelude ((/=), String, Char, ($))
+import Prelude (Eq (..), (||), String, Char, ($))
 
 import Control.Category ((.))
 import Control.Isomorphism.Partial
@@ -14,7 +14,7 @@ import Text.Syntax.Test (testSyntax)
 
 
 letter, digit :: Syntax s => s Char
-letter  =  subset isLetter <$> token
+letter  =  subset (\x -> isLetter x || x == '_') <$> token
 digit   =  subset isDigit <$> token
 
 identifier :: Syntax s => s String
