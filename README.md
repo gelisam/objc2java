@@ -7,7 +7,7 @@ Convert pure ObjectiveC code to pure Java code, libraries be damned.
 usage
 -----
 
-Pipe an ObjectiveC file into objc2java and we will convert what we can.
+Pipe an ObjectiveC file into `objc2java` and we will convert what we can.
 
     > cat tests/hello.m | objc2java
     // First program example
