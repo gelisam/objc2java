@@ -1,6 +1,5 @@
 import Data.Functor ((<$>))
 import Data.List (intercalate)
-import Data.Maybe (fromJust)
 import qualified Text.Java as Java
 import qualified Text.ObjC as ObjC
 import qualified Text.Syntax.Parser.Naive as Parser (parse)
@@ -52,11 +51,7 @@ convert (ObjC.MethodCall target
 
 
 objc2java :: String -> String
-objc2java = fromJust
-          . Printer.print (fragments Java.expr)
-          . (fmap . fmap) convert
-          . head
-          . Parser.parse (fragments ObjC.expr)
+objc2java = convert_fragments convert ObjC.expr Java.expr
 
 main :: IO ()
 main = do output <- objc2java <$> getContents
