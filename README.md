@@ -21,7 +21,7 @@ usage
 status
 ------
 
-Currently, the objc2java executable can filter an ObjectiveC source file and substitue Java-style calls where appropriate. Example output:
+Currently, the objc2java executable can filter an ObjectiveC source file and substitute Java-style calls where appropriate. Example output:
 
     > make demo
     // First program example
