@@ -30,7 +30,7 @@ Currently, the objc2java executable can filter an ObjectiveC source file and sub
     
     int main (int argc, const char * argv[])
     {
-      NSAutoreleasePool *pool = new(NSAutoreleasePool());
+      NSAutoreleasePool *pool = new NSAutoreleasePool();
       NSLog("Hello, World!");
       pool.drain();
       return 0;

@@ -22,7 +22,7 @@ testConvert input = do
 -- Just "myData"
 -- 
 -- >>> testConvert "[[Hello alloc] init]"
--- Just "new(Hello())"
+-- Just "new Hello()"
 -- 
 -- >>> testConvert "[myData writeToFile: @\"/tmp/log.txt\" atomically: NO]"
 -- Just "myData.writeToFile_atomically(\"/tmp/log.txt\", false)"
@@ -34,7 +34,7 @@ convert (ObjC.MethodCall (ObjC.MethodCall (ObjC.Var class_name)
                                           [])
                          (init:_)
                          args) | take 4 init == "init"
-  = Java.FunctionCall "new" [Java.FunctionCall class_name (fmap convert args)]
+  = Java.ConstructorCall class_name (fmap convert args)
 -- INSERT MORE IDIOMS ABOVE THIS LINE
 
 -- generic cases last
