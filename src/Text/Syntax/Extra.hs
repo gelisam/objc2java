@@ -1,3 +1,4 @@
+-- | A few useful tools when constructing invertible syntaxes.
 module Text.Syntax.Extra where
 
 import Prelude ()
