@@ -1,7 +1,7 @@
 -- | A few useful tools when constructing isomorphisms.
 module Control.Isomorphism.Partial.Extra where
 
-import Prelude ()
+import Prelude (Int, (-))
 
 import Control.Category (id, (.))
 import Control.Isomorphism.Partial (Iso, (***), (|||),
@@ -48,7 +48,7 @@ snd = (id ***)
 append_nil :: Iso a (a, [b])
 append_nil = snd nil . unit
   
--- | Invertible single-element list.
+-- | Invertibly pack a single element in a list.
 -- 
 -- >>> testIso 'a' singleton "a"
 -- True
@@ -86,3 +86,21 @@ unzip = split . inverse listCases where
                      . fst commute
                      . associate)
                . inverse associate
+
+-- | Invertible splitAt, where the inverse is of course concatenation.
+-- 
+-- >>> testIso "12345" (splitAt 3) ("123","45")
+-- True
+-- 
+-- >>> testIso "12" (splitAt 3) ("12","")
+-- True
+splitAt :: Int -> Iso [a] ([a], [a])
+splitAt 0 = commute . append_nil
+splitAt n = (caseNil ||| caseCons) . inverse listCases where
+  caseNil :: Iso () ([a], [a])
+  caseNil = append_nil . nil
+  
+  caseCons :: Iso (a, [a]) ([a], [a])
+  caseCons = fst cons . associate . snd (splitAt n')
+  
+  n' = n - 1
