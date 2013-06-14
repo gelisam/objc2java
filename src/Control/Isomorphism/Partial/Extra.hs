@@ -55,6 +55,20 @@ append_nil = snd nil . unit
 singleton :: Iso a [a]
 singleton = cons . append_nil
 
+-- | Swaps the first two elements of an ordered tuple.
+-- 
+-- >>> testIso (1, (2, "...")) swap (2, (1, "..."))
+-- True
+-- 
+-- Swapping other elements than the first two is easy:
+-- 
+-- >>> testIso (0, (1, (2, "..."))) (snd swap) (0, (2, (1, "...")))
+-- True
+swap :: Iso (a, (b, r)) (b, (a, r))
+swap = inverse associate
+     . fst commute
+     . associate
+
 -- | Invertible zip, fails if the lists have different lengths.
 -- 
 -- Examples:
@@ -82,9 +96,7 @@ unzip = split . inverse listCases where
   redistribute :: Iso ((a, b), (a', b'))
                       ((a, a'), (b, b'))
   redistribute = associate
-               . snd ( inverse associate
-                     . fst commute
-                     . associate)
+               . snd swap
                . inverse associate
 
 -- | Invertible splitAt, where the inverse is of course concatenation.
