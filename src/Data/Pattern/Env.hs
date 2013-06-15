@@ -6,7 +6,7 @@ import Prelude (Eq, String, Maybe (..))
 import Control.Category ((.))
 import Control.Isomorphism.Partial.Prim
 import Control.Isomorphism.Partial.Constructors (cons, listCases)
-import Text.Syntax.Classes (Alternative (..), ProductFunctor (..))
+import Text.Syntax.Classes (Alternative (..))
 
 import Control.Isomorphism.Partial.Constructors.Extra (cdr, swap)
 import Control.Isomorphism.Partial.Prim.Extra (equals, fst, snd)
@@ -40,13 +40,18 @@ type Env e = [(String, e)]
 -- Nothing
 lookup :: String -> Iso (Env a) (a, Env a)
 lookup s = (empty ||| consCase) . inverse listCases where
-  consCase :: Iso ((String, a), Env a) (a, Env a)
+  consCase :: Iso ((String, a), Env a)
+                  (          a, Env a)
   consCase = (cadr . caar_matches s) <|> recur
   
-  caar_matches = fst.fst.equals
+  caar_matches :: String -> Iso ((String, a), Env a)
+                                ((    (), a), Env a)
+  caar_matches = fst . fst . equals
   
-  cadr :: Iso (((), a), Env a) (a, Env a)
+  cadr :: Iso (((), a), Env a)
+              (      a, Env a)
   cadr = cdr . inverse associate
   
-  recur :: Iso ((String, a), Env a) (a, Env a)
+  recur :: Iso ((String, a), Env a)
+               (          a, Env a)
   recur = snd cons . swap . snd (lookup s)
