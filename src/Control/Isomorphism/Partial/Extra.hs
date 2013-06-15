@@ -107,6 +107,14 @@ append_nil = snd nil . unit
 singleton :: Iso a [a]
 singleton = cons . append_nil
 
+-- | Invertibly discard the left element; something which can only be done
+--   invertibly if that element is ().
+-- 
+-- >>> testIso ((), 'a') cdr 'a'
+-- True
+cdr :: Iso ((), a) a
+cdr = inverse (commute . unit)
+
 -- | Swaps the first two elements of an ordered tuple.
 -- 
 -- >>> testIso (1, (2, "...")) swap (2, (1, "..."))

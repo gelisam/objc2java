@@ -8,7 +8,7 @@ import Control.Isomorphism.Partial
 import Text.Syntax
 import Text.Syntax.Parser.Naive (parse)
 
-import Control.Isomorphism.Partial.Extra (snd)
+import Control.Isomorphism.Partial.Extra (snd, cdr)
 
 
 -- | A heterogeneous version of chainl1.
@@ -41,11 +41,8 @@ chainl1' arg0 op arg f = foldl f <$> arg0 <*> many (op <*> arg)
 sepBy' :: Syntax s => s a -> s () -> s b -> Iso (a, b) a -> s a
 sepBy' arg0 op arg f = chainl1' arg0 op arg (f . drop_op)
                        where
-  drop_left :: Iso ((), a) a
-  drop_left = inverse (commute . unit)
-  
   drop_op :: Iso (a, ((), b)) (a, b)
-  drop_op = snd drop_left
+  drop_op = snd cdr
 
 -- | A non-empty version of sepBy.
 -- 
