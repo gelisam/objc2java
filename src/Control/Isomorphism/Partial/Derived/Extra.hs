@@ -1,4 +1,4 @@
--- | A few useful tools when constructing isomorphisms.
+-- | Higher-level isomorphisms.
 module Control.Isomorphism.Partial.Derived.Extra where
 
 import Prelude (Eq (..), Int, Maybe (..), Num (..), const)

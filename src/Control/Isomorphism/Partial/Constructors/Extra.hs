@@ -1,4 +1,4 @@
--- | A few useful tools when constructing isomorphisms.
+-- | A few useful list-manipulation isomorphisms.
 module Control.Isomorphism.Partial.Constructors.Extra where
 
 import Prelude (Eq (..), Int, Maybe (..), Num (..), const)
