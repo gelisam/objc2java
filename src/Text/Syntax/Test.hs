@@ -10,7 +10,9 @@ import Text.Syntax.Parser.Naive (parse)
 import Text.Syntax.Printer.Naive (print)
 
 
--- | Correctness through whitespace-normalization: if an invertible syntax can correctly remove all the spurious space, this is a good indication that the parsing and printing phases were both successful.
+-- | Correctness through whitespace-normalization: if an invertible syntax can
+--   correctly remove all the spurious space, this is a good indication that
+--   the parsing and printing phases were both successful.
 -- 
 -- >>> testSyntax (text "A" <* optSpace <*> text "B") "AB"
 -- Just "A B"

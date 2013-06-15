@@ -12,9 +12,7 @@ import Control.Isomorphism.Partial.Prim.Extra (snd)
 import Control.Isomorphism.Partial.Constructors.Extra (cdr)
 
 
--- | A heterogeneous version of chainl1.
--- 
--- Examples:
+-- | A heterogeneous version of @chainl1@.
 -- 
 -- >>> parse (chainl1 (text "A") (text ",") (ignore ((), ((), ())))) "A,A,A"
 -- [()]
@@ -27,9 +25,7 @@ import Control.Isomorphism.Partial.Constructors.Extra (cdr)
 chainl1' :: Syntax s => s a -> s b -> s c -> Iso (a, (b, c)) a -> s a
 chainl1' arg0 op arg f = foldl f <$> arg0 <*> many (op <*> arg)
 
--- | A heterogeneous version of sepBy.
--- 
--- Examples:
+-- | A heterogeneous version of @sepBy@.
 -- 
 -- >>> parse (sepBy (text "A") (text ",")) "A,A,A"
 -- [[(),(),()]]
@@ -45,9 +41,7 @@ sepBy' arg0 op arg f = chainl1' arg0 op arg (f . drop_op)
   drop_op :: Iso (a, ((), b)) (a, b)
   drop_op = snd cdr
 
--- | A non-empty version of sepBy.
--- 
--- Examples:
+-- | A non-empty version of @sepBy@.
 -- 
 -- >>> parse (sepBy (text "A") (text ",")) "A"
 -- [[()]]

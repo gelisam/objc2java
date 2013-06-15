@@ -22,8 +22,6 @@ identifier = cons <$> letter <*> many (letter <|> digit)
 
 -- | A string literal.
 -- 
--- Examples:
--- 
 -- >>> parse quoted_string "hello"
 -- []
 -- 

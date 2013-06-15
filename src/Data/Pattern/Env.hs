@@ -18,15 +18,15 @@ import Control.Isomorphism.Partial.Test (testIso)
 --   variables to values using a simple association list.
 type Env e = [(String, e)]
 
--- | Lookup is invertible if it consumes its value. Returns the looked up value
---   and the reduced environment.
+-- | A version of @lookup@ which is made invertible by consuming its value.
+--   Returns the looked up value and the reduced environment.
 -- 
 -- >>> testIso [("a",1), ("b",2), ("c",3)] (lookup "a") (1, [("b",2), ("c",3)])
 -- True
 -- 
--- The inverse of a lookup is to add the value back inside the list. The value
--- is always added to the beginning of the list, so you might not recover the
--- exact original array.
+-- The inverse of removing a value from an environment is to add the value back
+-- inside the list. The value is always added to the beginning of the list, so
+-- you might not recover the exact original array.
 -- 
 -- >>> apply (lookup "c") [("a",1), ("b",2), ("c",3)]
 -- Just (3,[("a",1),("b",2)])

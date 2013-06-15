@@ -33,8 +33,6 @@ $(defineIsomorphisms ''Expr)
 
 -- | The syntax of ObjectiveC expressions.
 -- 
--- Examples:
--- 
 -- >>> testSyntax expr "[ [ Hello alloc ]init ]"
 -- Just "[[Hello alloc] init]"
 -- 

@@ -52,7 +52,7 @@ equals x = ignore x . subset (==x)
 -- >>> unapply (ignore 'a') ()
 -- Just 'a'
 -- 
--- Of course, if the two isomorphism don't overlap, that "problem" will never
+-- Of course, if the two isomorphism don't overlap, that \"problem\" will never
 -- happen.
 -- 
 -- >>> testIso 'b' (a2b <|> inverse a2b) 'a'

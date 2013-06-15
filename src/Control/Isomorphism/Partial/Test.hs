@@ -8,7 +8,8 @@ import Control.Isomorphism.Partial (Iso, apply, unapply)
 
 -- | Bidirectional correctness: two tests for the price of one.
 -- 
--- Isomorphisms are supposed to work in both direction, so you should test both:
+-- Isomorphisms are supposed to work in both direction, so you should test
+-- both:
 -- 
 -- >>> apply cons ('a',"")
 -- Just "a"
@@ -16,7 +17,8 @@ import Control.Isomorphism.Partial (Iso, apply, unapply)
 -- >>> unapply cons "a"
 -- Just ('a',"")
 -- 
--- With testIso, you still test both directions, but you don't have to repeat yourself:
+-- With @testIso@, you still test both directions, but you don't have to repeat
+-- yourself:
 -- 
 -- >>> testIso ('a',"") cons "a"
 -- True

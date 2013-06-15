@@ -1,9 +1,9 @@
--- | Simultaneously define pattern-matching and a substitution.
+-- | Patterns unify substitution and pattern-matching.
 -- 
--- Given a pattern with variables X and Y, we can either match against a closed
--- term to obtain values for X and Y, or in the other direction, we can assign
--- values to X and Y in order to obtain a closed term. Indeed, substitution is
--- the inverse of pattern-matching!
+-- Given a pattern with variables @x@ and @y@, we can either match against a
+-- closed term to obtain values for @x@ and @y@, or in the other direction, we
+-- can assign values to @x@ and @y@ in order to obtain a closed term. Indeed,
+-- substitution is the inverse of pattern-matching!
 module Data.Pattern (Env) where
 
 import Data.Pattern.Env

@@ -13,26 +13,29 @@ import Control.Isomorphism.Partial.Prim.Extra (fst, snd)
 import Control.Isomorphism.Partial.Test (testIso)
 
 
--- | Introduces nil in the same way as () is introduced, that is, in parallel to existing data.
+-- | Introduces nil in the same way as @()@ is introduced, that is, in parallel
+--   to existing data.
 -- 
--- The value [] is a lot like the value (), and the nil isomorphism recognizes this:
+-- The value @[]@ is a lot like the value @()@, and the @nil@ isomorphism
+-- recognizes this:
 -- 
 -- >>> testIso () nil []
 -- True
 -- 
--- Despite the similarity, the partial-isomorphisms library only allows () to be appended for free:
+-- Despite the similarity, the partial-isomorphisms library only allows @()@ to
+-- be appended for free:
 -- 
 -- >>> testIso 'a' unit ('a', ())
 -- True
 -- 
--- The isomorphism append_nil fixes this minor oversight.
+-- The isomorphism @append_nil@ fixes this minor oversight.
 -- 
 -- >>> testIso 'a' append_nil ('a', [])
 -- True
 append_nil :: Iso a (a, [b])
 append_nil = snd nil . unit
   
--- | Invertibly pack a single element in a list.
+-- | Invertibly pack a single element into a list.
 -- 
 -- >>> testIso 'a' singleton "a"
 -- True
@@ -40,7 +43,7 @@ singleton :: Iso a [a]
 singleton = cons . append_nil
 
 -- | Invertibly discard the left element; something which can only be done
---   invertibly if that element is ().
+--   invertibly if that element is @()@.
 -- 
 -- >>> testIso ((), 'a') cdr 'a'
 -- True

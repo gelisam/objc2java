@@ -36,8 +36,6 @@ $(defineIsomorphisms ''Expr)
 
 -- | The syntax of Java expressions.
 -- 
--- Examples:
--- 
 -- >>> testSyntax expr "Hello . alloc . init"
 -- Just "Hello.alloc.init"
 -- 

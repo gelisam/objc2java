@@ -19,8 +19,6 @@ $(defineIsomorphisms ''Fragment)
 
 -- | Recognized fragments separated by junk.
 -- 
--- Examples:
--- 
 -- >>> head $ Parser.parse (fragments $ text "A") "..A."
 -- [Unrecognized '.',Unrecognized '.',Recognized (),Unrecognized '.']
 fragments :: Syntax s => s a -> s [Fragment a]
@@ -30,8 +28,6 @@ fragments recognize = many fragment where
 
 
 -- | Convert recognized fragments, leaving the rest alone.
--- 
--- Examples:
 -- 
 -- >>> convert_fragments id (text "A") (text "B") "..A."
 -- "..B."

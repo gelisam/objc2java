@@ -14,8 +14,6 @@ testConvert input = do
 
 -- | Convert ObjectiveC idioms into corresponding Java idioms.
 -- 
--- Examples:
--- 
 -- >>> testConvert "myData"
 -- Just "myData"
 -- 

@@ -14,9 +14,7 @@ import Control.Isomorphism.Partial.Prim.Extra (fst, snd)
 import Control.Isomorphism.Partial.Test (testIso)
 
 
--- | Invertible zip, fails if the lists have different lengths.
--- 
--- Examples:
+-- | Invertible @zip@, fails if the lists have different lengths.
 -- 
 -- >>> testIso [(1, '1'), (2, '2'), (3, '3')] unzip ([1,2,3], "123")
 -- True
@@ -44,7 +42,7 @@ unzip = split . inverse listCases where
                . snd swap
                . inverse associate
 
--- | Invertible splitAt, where the inverse is of course concatenation.
+-- | Invertible @splitAt@, where the inverse is of course concatenation.
 -- 
 -- >>> testIso "12345" (splitAt 3) ("123","45")
 -- True
