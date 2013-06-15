@@ -1,20 +1,15 @@
--- | Simultaneously define pattern-matching and a substitution.
--- 
--- Given a pattern with variables X and Y, we can either match against a closed
--- term to obtain values for X and Y, or in the other direction, we can assign
--- values to X and Y in order to obtain a closed term. Indeed, substitution is
--- the inverse of pattern-matching!
-module Text.Pattern where
+-- | Invertible environment lookup.
+module Data.Pattern.Env where
 
-import Prelude (Eq, String, Maybe (..), undefined)
+import Prelude (Eq, String, Maybe (..))
 
 import Control.Category ((.))
 import Control.Isomorphism.Partial.Prim
-import Control.Isomorphism.Partial.Constructors
+import Control.Isomorphism.Partial.Constructors (cons, listCases)
 import Text.Syntax.Classes (Alternative (..), ProductFunctor (..))
 
 import Control.Isomorphism.Partial.Constructors.Extra (cdr, swap)
-import Control.Isomorphism.Partial.Prim.Extra
+import Control.Isomorphism.Partial.Prim.Extra (equals, fst, snd)
 import Control.Isomorphism.Partial.Test (testIso)
 
 
