@@ -9,7 +9,9 @@ import Control.Isomorphism.Partial (Iso, (<$>))
 import Control.Isomorphism.Partial.TH (defineIsomorphisms)
 import Text.Syntax
 
-import Control.Isomorphism.Partial.Extra
+import Control.Isomorphism.Partial.Constructors.Extra (append_nil, singleton)
+import Control.Isomorphism.Partial.Derived.Extra (unzip)
+import Control.Isomorphism.Partial.Prim.Extra (snd)
 import Text.Common
 import Text.Syntax.Extra (sepBy1)
 import Text.Syntax.Test (testSyntax)

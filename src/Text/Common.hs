@@ -9,7 +9,7 @@ import Data.Char (isLetter, isDigit)
 import Text.Syntax
 import Text.Syntax.Parser.Naive (parse)
 
-import Control.Isomorphism.Partial.Extra
+import Control.Isomorphism.Partial.Prim.Extra (snd)
 import Text.Syntax.Test (testSyntax)
 
 

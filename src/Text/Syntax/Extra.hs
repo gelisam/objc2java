@@ -8,7 +8,8 @@ import Control.Isomorphism.Partial
 import Text.Syntax
 import Text.Syntax.Parser.Naive (parse)
 
-import Control.Isomorphism.Partial.Extra (snd, cdr)
+import Control.Isomorphism.Partial.Prim.Extra (snd)
+import Control.Isomorphism.Partial.Constructors.Extra (cdr)
 
 
 -- | A heterogeneous version of chainl1.

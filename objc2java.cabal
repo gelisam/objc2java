@@ -30,7 +30,9 @@ Library
                        Text.Fragment,
                        Text.Syntax.Extra,
                        Text.Syntax.Test,
-                       Control.Isomorphism.Partial.Extra
+                       Control.Isomorphism.Partial.Constructors.Extra
+                       Control.Isomorphism.Partial.Derived.Extra
+                       Control.Isomorphism.Partial.Prim.Extra
                        Control.Isomorphism.Partial.Test
   -- Other-modules:       
   
