@@ -34,8 +34,7 @@ newtype Pattern e a = Pattern { runPattern :: Iso (Env e) (a, Env e) }
 -- >>> subst (singleton <$> var "y") [("x",1), ("y",2)]
 -- Just [2]
 -- 
--- Of course, if the environment doesn't provide enough values, the computation
--- fails.
+-- If the environment is incomplete, the substitution fails.
 -- 
 -- >>> subst (singleton <$> var "y") [("x",1)]
 -- Nothing
@@ -49,14 +48,13 @@ subst p env = do
   (x, _) <- apply (runPattern p) env
   return x
 
--- | Match a term against a pattern to extract the sub-terms which match the
---   variables.
+-- | Match a term against a pattern, extracting the sub-terms corresponding to
+--   each variable.
 -- 
 -- >>> match (singleton <$> var "x") [1]
 -- Just [("x",1)]
 -- 
--- Of course, if the term doesn't match the pattern, then the pattern-matching
--- fails.
+-- If the term doesn't match the pattern, the matching fails.
 -- 
 -- >>> match (singleton <$> var "x") [1, 2]
 -- Nothing
