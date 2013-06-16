@@ -4,6 +4,10 @@
 -- closed term to obtain values for @x@ and @y@, or in the other direction, we
 -- can assign values to @x@ and @y@ in order to obtain a closed term. Indeed,
 -- substitution is the inverse of pattern-matching!
-module Data.Pattern (Env) where
+module Data.Pattern
+  ( Env
+  , module Data.Pattern.Prim
+  ) where
 
 import Data.Pattern.Env
+import Data.Pattern.Prim
