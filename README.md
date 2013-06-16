@@ -40,7 +40,7 @@ For comparison, the original ObjectiveC file looked like this.
 
 purpose
 -------
-The goal is to help programmers port ObjectiveC code to Java by automating the boring parts. We help, but we don't do all the work: the generated code won't compile, and will still contain a lot of ObjectiveC idiosyncrasies. The idea is to let the programmer focus on translating those idiosyncrasies instead of wasting time endlessly translating `[object method]` into `object(method)`.
+The goal is to help programmers port ObjectiveC code to Java by automating the boring parts. We help, but we don't do all the work: the generated code won't compile, and will still contain a lot of ObjectiveC idiosyncrasies. The idea is to let the programmer focus on translating those idiosyncrasies instead of wasting time endlessly translating `[object method: arg]` into `object.method(arg)`.
 
 
 status
