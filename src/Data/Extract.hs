@@ -136,3 +136,26 @@ instance ProductFunctor (Extract e) where
 -- True
 instance IsoFunctor (Extract e) where
   iso <$> e = Extract $ Iso.fst iso . runExtract e
+
+
+-- | Extract from the left half of the environment.
+liftFst :: Extract u a -> Extract (u, v) a
+liftFst e = Extract $ inverse associate . (Iso.fst $ runExtract e)
+
+-- | Extract from the right half of the environment.
+-- 
+-- Up to now, a major limitation of extractors was that all the extracted
+-- values had the same type.
+-- 
+-- >>> testExtract [1,2,3] (extract_head <*> extract_head) (1,2) [3]
+-- True
+-- 
+-- By combining heterogeneous environments, extractors of different types can
+-- finally be brought together:
+-- 
+-- >>> let head1 = liftFst extract_head
+-- >>> let head2 = liftSnd extract_head
+-- >>> testExtract ([1,2,3],"abc") (head1 <*> head2) (1,'a') ([2,3],"bc")
+-- True
+liftSnd :: Extract v a -> Extract (u, v) a
+liftSnd e = Extract $ swap . (Iso.snd $ runExtract e)
