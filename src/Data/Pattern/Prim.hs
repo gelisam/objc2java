@@ -1,7 +1,7 @@
 -- | Primitive combinators from which more complex patterns can be built.
 module Data.Pattern.Prim where
 
-import Prelude (Eq, String, Bool, Maybe (..), return)
+import Prelude (Eq, String, Bool, Maybe (..), ($), flip)
 
 import Control.Category ((.))
 import Control.Isomorphism.Partial.Constructors (just, cons, nil)
@@ -12,14 +12,48 @@ import Control.Isomorphism.Partial.Constructors.Extra (singleton, cdr)
 import Control.Isomorphism.Partial.Prim.Extra (equals, fst, snd)
 import Control.Isomorphism.Partial.Test (testIso)
 
+import Data.Extract
 import Data.Pattern.Env
 
 
 -- | A term of type @a@ with holes of type @e@.
 -- 
+-- Each hole is a pattern-variable, matching a sub-term at that position.
+-- 
+-- >>> testPattern (1, 2) (var "x" <*> var "y") [("x",1), ("y",2)]
+-- True
+-- 
+-- So-called \"pure\" patterns match exactly one value.
+-- 
+-- >>> testPattern 1 (pure 1) []
+-- True
+-- 
+-- They are useful when only some of the subterms are pattern variables.
+-- 
+-- >>> testPattern (1, 2) (var "x" <*> pure 2) [("x",1)]
+-- True
+-- 
+-- The combinator library is focused on matching ordered tuples, but you can
+-- also use it on custom datatypes:
+-- 
+-- >>> testPattern (Just 1) (just <$> var "x") [("x",1)]
+-- True
+-- 
+-- >>> testPattern [1] (cons <$> var "x" <*> pure []) [("x",1)]
+-- True
+-- 
+-- The partial-isomorphisms library provides a convenient Template Haskell
+-- function, @defineIsomorphisms@, which generates isomorphisms like @just@ and
+-- @cons@ for your domain-specific algrebraic datatypes.
+type Pattern e a = Extract (Env e) a
+
 -- A pattern is represented by an isomorphism, whose two directions represent
 -- substitution and pattern-matching.
-newtype Pattern e a = Pattern { runPattern :: Iso (Env e) (a, Env e) }
+-- 
+-- >>> testIso [("x",1)] (runPattern $ just <$> var "x") (Just 1, [])
+-- True
+runPattern :: Pattern e a -> Iso (Env e) (a, Env e)
+runPattern = runExtract
 
 -- | Plug in all the holes to construct a closed term.
 -- 
@@ -44,9 +78,7 @@ newtype Pattern e a = Pattern { runPattern :: Iso (Env e) (a, Env e) }
 -- >>> subst (var "y" <*> var "x" <*> var "y") [("x","x1"), ("x","x2"), ("y","y1"), ("y","y2")]
 -- Just ("y1",("x1","y2"))
 subst :: Pattern e a -> Env e -> Maybe a
-subst p env = do
-  (x, _) <- apply (runPattern p) env
-  return x
+subst = extract
 
 -- | Match a term against a pattern, extracting the sub-terms corresponding to
 --   each variable.
@@ -65,7 +97,7 @@ subst p env = do
 -- >>> match (var "y" <*> var "x" <*> var "y") (1, (2, 3))
 -- Just [("y",1),("x",2),("y",3)]
 match :: Pattern e a -> a -> Maybe (Env e)
-match p x = unapply (runPattern p) (x, [])
+match p x = insert p x []
 
 
 -- | Bidirectional correctness: two tests for the price of one.
@@ -85,60 +117,15 @@ match p x = unapply (runPattern p) (x, [])
 -- >>> testPattern [1] (singleton <$> var "x") [("x",1)]
 -- True
 testPattern :: (Eq e, Eq a) => a -> Pattern e a -> Env e -> Bool
-testPattern x p env = testIso env (runPattern p) (x,[])
+testPattern x p env = testExtract env p x []
 
 
 -- | A pattern variable, the primitive pattern which matches anything.
 -- 
 -- >>> testPattern 1 (var "x") [("x",1)]
 -- True
+-- 
+-- Surprisingly, that all we need! The extractor combinators take care of
+-- everything else for us.
 var :: String -> Pattern a a
-var = Pattern . lookup
-
--- | A pure value, the primitive pattern which only matches one value.
--- 
--- >>> testPattern 1 (pure 1) []
--- True
--- 
--- This is useful when only some of the subterms are pattern variables.
--- 
--- >>> testPattern (1, 2) (var "x" <*> pure 2) [("x",1)]
--- True
--- 
--- The nomenclature for the name @pure@ is taken from the invertible-syntax
--- library, which has a function of the same name with a similar meaning.
-pure :: Eq a => a -> Pattern e a
-pure = Pattern . check where
-  check :: Eq a => a -> Iso (Env e) (a, Env e)
-  check x = inverse (cdr . car_matches x)
-  
-  car_matches :: Eq a => a -> Iso ( a, Env e)
-                                  ((), Env e)
-  car_matches = fst . equals
-
-
--- | A pair of patterns, for matching tuples.
--- 
--- >>> testPattern (1, 2) (var "x" <*> var "y") [("x",1), ("y",2)]
--- True
-instance ProductFunctor (Pattern e) where
-  p <*> q = Pattern (associate . snd q' . p') where
-    p' = runPattern p
-    q' = runPattern q
-
--- | Use isomorphisms to match custom datatypes.
--- 
--- The combinator library is focused on matching ordered tuples, but you can
--- also match on a custom constructor by using an isomorphism to bridge the
--- gap between the constructor arguments and an ordered tuple containing those
--- same arguments. The partial-isomorphisms library provides a convenient
--- Template Haskell function, @defineIsomorphisms@, which generates those
--- isomorphisms for you.
--- 
--- >>> testPattern (Just 1) (just <$> var "x") [("x",1)]
--- True
--- 
--- >>> testPattern [1,2] (cons <$> var "x" <*> (cons <$> var "y" <*> pure [])) [("x",1),("y",2)]
--- True
-instance IsoFunctor (Pattern e) where
-  iso <$> p = Pattern (fst iso . runPattern p)
+var = Extract . lookup
