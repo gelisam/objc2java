@@ -13,7 +13,7 @@ import Control.Isomorphism.Partial.Test (testIso)
 
 
 -- $setup
--- >>> let a2b = (inverse (equals 'b')) . equals 'a'
+-- >>> let a2b = element 'b' . equals 'a'
 
 -- | Expects a particular value.
 -- 
@@ -26,7 +26,7 @@ import Control.Isomorphism.Partial.Test (testIso)
 -- >>> apply (equals 'a') 'b'
 -- Nothing
 equals :: Eq a => a -> Iso a ()
-equals x = ignore x . subset (==x)
+equals = inverse . element
 
 -- | The isomorphisms are partial, meaning they can fail.
 --   When they do, you can fall back to a second isomorphism instead.
