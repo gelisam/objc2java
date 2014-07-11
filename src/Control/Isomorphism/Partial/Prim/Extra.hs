@@ -6,6 +6,7 @@ import Prelude (Eq (..), Int, Maybe (..), Num (..), const)
 import Control.Category (id, (.))
 import Control.Isomorphism.Partial
 import Control.Isomorphism.Partial.Unsafe (Iso (..))
+import Control.Monad (mplus)
 import Data.Either (Either)
 import Text.Syntax.Classes (Alternative (..))
 
@@ -60,11 +61,16 @@ equals = inverse . element
 instance Alternative (Iso a) where
   empty = Iso (const Nothing)
               (const Nothing)
-  x <|> y = (x ||| y) . (x1 ||| y2) . inverse (x' ||| y') where
-    x' = inverse x
-    y' = inverse y
-    x1 = left . x'
-    y2 = right . y'
+  Iso x x' <|> Iso y y' = Iso xy xy'
+    where
+      xy a = x a `mplus` y a
+      xy' a = x' a `mplus` y' a
+  -- equivalent, slower definition:
+  -- x <|> y = (x ||| y) . (x1 ||| y2) . inverse (x' ||| y') where
+  --   x' = inverse x
+  --   y' = inverse y
+  --   x1 = left . x'
+  --   y2 = right . y'
 
 
 -- | Apply an isomorphism to the left part of a pair.
