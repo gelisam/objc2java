@@ -7,21 +7,21 @@ all: build doc test
 config: dist/setup-config
 
 dist/setup-config:
-	cabal-dev install-deps
-	cabal-dev configure
+	cabal sandbox init
+	cabal install --only-dependencies
+	cabal configure
 
 build: config
-	cabal-dev build | cat
-	@cabal-dev build &> /dev/null
+	cabal build
 
 doc: build
-	find src demo -name '*.hs' | xargs haddock --optghc='-package-db '"$$(ls -d cabal-dev/packages-*.conf)" --no-warnings --odir=doc --html
+	find src demo -name '*.hs' | xargs haddock --optghc=-package-db --optghc="$$(ls -d .cabal-sandbox/*-packages.conf.d)" --no-warnings --odir=doc --html
 
 
 test: small-tests big-tests
 
 small-tests: build
-	find src demo -name '*.hs' | xargs doctest -package-db "$$(ls -d cabal-dev/packages-*.conf)"
+	find src demo -name '*.hs' | xargs doctest -package-db "$$(ls -d .cabal-sandbox/*-packages.conf.d)"
 	@echo
 
 
@@ -48,4 +48,4 @@ clobber: clean
 	rm -rf dist doc
 
 distclean: clobber
-	rm -rf cabal-dev
+	rm -rf .cabal-sandbox cabal.sandbox.config
